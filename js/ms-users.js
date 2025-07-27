@@ -198,7 +198,7 @@ function loginUser() {
           data.AuthenticationResult.RefreshToken
         );
 
-        alert("Login successful! Welcome back!");
+        alert("Login successful! Welcome!");
 
         // Redirect to main page
         window.location.href = "main_page.html";
