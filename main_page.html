@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Main Page</title>
+    <link rel="stylesheet" href="css/main_page.css" />
+  </head>
+  <body onload="getItems(10)">
+    <header>
+      <h1>View All Lost Items Page</h1>
+    </header>
+    <main>
+      <div class="search-container">
+        <input
+          type="text"
+          id="search-input"
+          class="search-bar"
+          placeholder="Search.."
+        />
+      </div>
+      <section>
+        <h2>Items:</h2>
+        <div id="items-list"></div>
+      </section>
+    </main>
+    <script src="js/ms-items.js"></script>
+
+    <div class="button-container">
+      <button
+        class="circular-btn"
+        onclick="location.href='add_items_page.html'"
+      >
+        +
+      </button>
+    </div>
+  </body>
+</html>
+

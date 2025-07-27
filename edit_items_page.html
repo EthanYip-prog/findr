@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Item</title>
+    <link rel="stylesheet" href="css/add_items_page.css" />
+  </head>
+
+  <body>
+    <a href="main_page.html" class="back-btn">Back</a>
+
+    <div class="modal fade" id="editJob" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title">Edit Lost Item</h2>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-sm">
+                <form id="edit-item-form">
+                  <div class="item-name">
+                    <label>Item Name</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="edit_item_name"
+                    />
+                  </div>
+
+                  <div class="description">
+                    <label>Item Description</label>
+                    <textarea
+                      class="form-control"
+                      id="edit_description"
+                    ></textarea>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Item Status</label>
+                    <select
+                      class="form-control form-select"
+                      id="edit_item_status"
+                    >
+                      <option value="claimed">Claimed</option>
+                      <option value="unclaimed">Unclaimed</option>
+                    </select>
+                  </div>
+
+                  <div class="Category">
+                    <label>Category</label>
+                    <select class="form-control form-select" id="edit_Category">
+                      <option value="Stationery">Stationery</option>
+                      <option value="Valuables">Valuables</option>
+                      <option value="Personal">Personal</option>
+                      <option value="Electronics">Electronics</option>
+                      <option value="Others">Others</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Upload Image</label>
+                    <input
+                      type="file"
+                      class="form-control"
+                      id="edit_image_file"
+                      accept="image/*"
+                    />
+                    <div
+                      id="edit-image-preview"
+                      style="margin-top: 10px; display: none"
+                    >
+                      <img
+                        id="edit-preview-img"
+                        src=""
+                        alt="Image preview"
+                        style="
+                          max-width: 200px;
+                          max-height: 200px;
+                          border-radius: 8px;
+                          border: 2px solid #ddd;
+                        "
+                      />
+                    </div>
+                    <input type="hidden" id="edit_image_url" />
+                  </div>
+
+                  <div class="modal-footer">
+                    <button type="submit" class="btn btn-warning">
+                      Update Item
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="js/ms-items.js"></script>
+  </body>
+</html>

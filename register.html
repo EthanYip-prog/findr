@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register New User</title>
+    <link rel="stylesheet" href="css/register.css" />
+    <!-- AWS SDK -->
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1536.0.min.js"></script>
+    <!-- User authentication script -->
+    <script src="js/ms-users.js"></script>
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <form action="">
+        <h1>Register New User</h1>
+        <div class="input-box">
+          <input type="text" placeholder="Username" required />
+        </div>
+        <div class="input-box">
+          <input type="password" placeholder="Password" required />
+        </div>
+        <div class="input-box">
+          <input type="email" placeholder="Email" required />
+        </div>
+
+        <button type="submit" class="register-btn">Register</button>
+
+        <div class="login-link">
+          <p>Return to <a href="login.html">Login</a></p>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

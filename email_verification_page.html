@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Email Verification Page</title>
+    <link rel="stylesheet" href="css/email_verification_page.css" />
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1536.0.min.js"></script>
+    <script src="js/ms-users.js"></script>
+  </head>
+
+  <body>
+    <div class="opt-form">
+      <div class="header-form">
+        <h4>Verify Your Email</h4>
+        <p>
+          Please enter your username and the 6-digit verification code sent to
+          your email:
+        </p>
+      </div>
+
+      <div style="margin-bottom: 25px">
+        <input
+          type="text"
+          placeholder="Username"
+          id="verify-username"
+          required
+          style="
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: #fafafa;
+          "
+        />
+      </div>
+
+      <form>
+        <div class="auth-pin-wrap">
+          <input type="text" class="code-input" maxlength="1" required />
+          <input type="text" class="code-input" maxlength="1" required />
+          <input type="text" class="code-input" maxlength="1" required />
+          <input type="text" class="code-input" maxlength="1" required />
+          <input type="text" class="code-input" maxlength="1" required />
+          <input type="text" class="code-input" maxlength="1" required />
+        </div>
+
+        <input type="hidden" id="verification-code" />
+
+        <div class="btn-wrap">
+          <button type="submit">Confirm</button>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px">
+          <p style="font-size: 14px; color: #666; margin-bottom: 10px">
+            Already verified?
+            <a href="login.html" style="color: #7667ff; text-decoration: none"
+              >Login</a
+            >
+          </p>
+          <p style="font-size: 14px; color: #666">
+            Need a new code?
+            <a
+              href="#"
+              onclick="resendVerificationCode()"
+              style="color: #7667ff; text-decoration: none; cursor: pointer"
+              >Resend Code</a
+            >
+          </p>
+        </div>
+      </form>
+    </div>
+
+    <style>
+      input[type="text"]:focus {
+        border: 2px solid #7667ff !important;
+        background: #fff !important;
+        box-shadow: 0 0 0 3px rgba(118, 103, 255, 0.1);
+      }
+    </style>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const codeInputs = document.querySelectorAll(".code-input");
+
+        codeInputs.forEach((input, index) => {
+          input.addEventListener("input", function (e) {
+            this.value = this.value.replace(/[^0-9]/g, ""); // to allow only numbers
+
+            if (this.value.length === 1 && index < codeInputs.length - 1) {
+              // Auto-advance to next input
+              codeInputs[index + 1].focus();
+            }
+
+            updateVerificationCode();
+          });
+
+          input.addEventListener("keydown", function (e) {
+            // Handle backspace
+            if (e.key === "Backspace" && this.value === "" && index > 0) {
+              codeInputs[index - 1].focus();
+            }
+          });
+
+          input.addEventListener("paste", function (e) {
+            // Handle copy and paste
+            e.preventDefault();
+            const pastedData = e.clipboardData.getData("text");
+            const digits = pastedData.replace(/[^0-9]/g, "").slice(0, 6);
+
+            for (let i = 0; i < digits.length && i < codeInputs.length; i++) {
+              codeInputs[i].value = digits[i];
+            }
+
+            const nextIndex = Math.min(digits.length, codeInputs.length - 1);
+            codeInputs[nextIndex].focus();
+
+            updateVerificationCode();
+          });
+        });
+
+        function updateVerificationCode() {
+          // Collect the values from all inputs
+          const code = Array.from(codeInputs)
+            .map((input) => input.value)
+            .join("");
+          document.getElementById("verification-code").value = code;
+        }
+      });
+    </script>
+  </body>
+</html>
