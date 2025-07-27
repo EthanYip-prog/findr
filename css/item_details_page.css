@@ -44,13 +44,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
 }
 
-.close-btn:hover {
-    background-color: #bbb;
-    transform: scale(1.1);
-}
 
 .item-content {
     display: flex;
