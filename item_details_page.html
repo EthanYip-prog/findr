@@ -28,7 +28,7 @@
 
         <div class="item-image-section">
           <div class="image-placeholder" id="item-image-container">
-            <div class="placeholder-icon"></div>
+            <!-- Image will be loaded here or section will be hidden -->
           </div>
         </div>
       </div>
@@ -123,15 +123,27 @@
           imageContainer.innerHTML =
             '<img src="' +
             imageUrl +
-            '" alt="Item image" class="item-image" onload="console.log(\'Image loaded successfully\');" onerror="showImagePlaceholder();">';
+            '" alt="Item image" class="item-image" onload="console.log(\'Image loaded successfully\');" onerror="hideImageSection();">';
         } else {
-          showImagePlaceholder();
+          hideImageSection();
         }
       }
 
-      function showImagePlaceholder() {
+      function hideImageSection() {
         var imageContainer = document.getElementById("item-image-container");
-        imageContainer.innerHTML = '<div class="placeholder-icon">📷</div>';
+        imageContainer.style.display = "none";
+
+        // Also hide the entire image section
+        var imageSection = document.querySelector(".item-image-section");
+        if (imageSection) {
+          imageSection.style.display = "none";
+        }
+
+        // Expand the info section to full width
+        var infoSection = document.querySelector(".item-info-section");
+        if (infoSection) {
+          infoSection.style.flex = "1 1 100%";
+        }
       }
 
       function goBackToMain() {
