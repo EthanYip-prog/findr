@@ -64,7 +64,7 @@ function getItems(num) {
             imageUrl +
             '" alt="Item image" onload="console.log(\'Image loaded successfully:\', this.src);" onerror="console.error(\'Failed to load image:\', this.src);">';
         } else {
-          html += '<div class="placeholder-image"><span>📷</span></div>';
+          html += '<div class="placeholder-image"><span></span></div>';
         }
         html += "</div>";
 
@@ -372,19 +372,19 @@ function handleImageSelection(event) {
       file.type
     );
 
-    // Validate file type
+
     if (!file.type.startsWith("image/")) {
       alert("Please select an image file");
       return;
     }
 
-    // Validate file size (limit to 5MB)
+
     if (file.size > 5 * 1024 * 1024) {
       alert("File size must be less than 5MB");
       return;
     }
 
-    // Show image preview
+
     var reader = new FileReader();
     reader.onload = function (e) {
       var previewDiv = document.getElementById("image-preview");
@@ -395,42 +395,40 @@ function handleImageSelection(event) {
     };
     reader.readAsDataURL(file);
 
-    // Upload image to S3
+
     uploadImageToS3(file);
   }
 }
 
-// Upload image to S3 bucket
+
 function uploadImageToS3(file) {
   console.log("Starting S3 upload for:", file.name);
 
-  // Generate unique filename
+
   var timestamp = new Date().getTime();
   var fileName = timestamp + "_" + file.name.replace(/[^a-zA-Z0-9.-]/g, "");
 
-  // Show upload progress
+
   var uploadStatus = document.createElement("div");
   uploadStatus.id = "upload-status";
   uploadStatus.innerHTML = '<p style="color: #007bff;">Uploading image...</p>';
   document.getElementById("image-preview").appendChild(uploadStatus);
 
-  // Convert file to base64
+
   var reader = new FileReader();
   reader.onload = function (e) {
-    // Get base64 data without the data:image/jpeg;base64, prefix
     var base64Data = e.target.result.split(",")[1];
 
-    // Prepare the request body for your Lambda function
+
     var requestBody = {
       base64Image: base64Data,
       fileName: fileName,
       folder: "images", // This will put images in the 'images' folder
     };
 
-    // Upload to your Lambda function endpoint
+
     var uploadRequest = new XMLHttpRequest();
 
-    // Replace with your actual API Gateway endpoint for the upload Lambda
     uploadRequest.open(
       "POST",
       "https://g19duilfpd.execute-api.us-east-1.amazonaws.com/api/upload-image",
@@ -446,10 +444,9 @@ function uploadImageToS3(file) {
           var response = JSON.parse(uploadRequest.responseText);
           console.log("Upload successful:", response);
 
-          // Set the image URL in the hidden field (just the filename)
           document.getElementById("image_url").value = fileName;
 
-          // Update status
+ 
           if (statusDiv) {
             statusDiv.innerHTML =
               '<p style="color: #28a745;">Image uploaded successfully!</p>';
@@ -496,21 +493,20 @@ function uploadImageToS3(file) {
   reader.readAsDataURL(file);
 }
 
-function editItem(itemId) {
+function editItem(itemId) { // function to redirect to edit page
   console.log("Redirecting to edit page for item:", itemId);
   window.location.href = "edit_items_page.html?id=" + itemId;
 }
 
-// View item details function
-function viewItemDetails(itemId) {
+
+function viewItemDetails(itemId) { // function to redirect to item details page
   console.log("Redirecting to item details page for item:", itemId);
   window.location.href = "item_details_page.html?id=" + itemId;
 }
 
-// Load item data for editing
-function loadItemForEdit() {
-  // Get item ID from URL parameters
-  var urlParams = new URLSearchParams(window.location.search);
+
+function loadItemForEdit() {  // load the item data when in the edit page
+  var urlParams = new URLSearchParams(window.location.search); 
   var itemId = urlParams.get("id");
 
   if (!itemId) {
@@ -521,7 +517,6 @@ function loadItemForEdit() {
 
   console.log("Loading item for edit, ID:", itemId);
 
-  // Fetch all items and find the one to edit
   var request = new XMLHttpRequest();
   request.open(
     "GET",
@@ -534,8 +529,6 @@ function loadItemForEdit() {
       try {
         var response = JSON.parse(request.responseText);
         var items = response.items || [];
-
-        // Find the item with matching ID
         var itemToEdit = items.find(function (item) {
           return item.item_id == itemId;
         });
@@ -564,11 +557,9 @@ function loadItemForEdit() {
   request.send();
 }
 
-// Populate the edit form with item data
+// Filling the edit form with item data
 function populateEditForm(item) {
-  console.log("Populating edit form with:", item);
-
-  // Fill in the form fields
+  console.log("Filling edit form with:", item);
   document.getElementById("edit_item_name").value = item.item_name || "";
   document.getElementById("edit_description").value = item.description || "";
   document.getElementById("edit_item_status").value =
@@ -576,8 +567,8 @@ function populateEditForm(item) {
   document.getElementById("edit_Category").value = item.category || "Others";
   document.getElementById("edit_image_url").value = item.image_url || "";
 
-  // Show current image if it exists
-  if (item.image_url) {
+
+  if (item.image_url) { 
     var previewDiv = document.getElementById("edit-image-preview");
     var previewImg = document.getElementById("edit-preview-img");
     var imageUrl =
@@ -591,7 +582,6 @@ function populateEditForm(item) {
   window.currentEditItemId = item.item_id;
 }
 
-// Handle image selection for edit page
 function handleEditImageSelection(event) {
   var file = event.target.files[0];
   if (file) {
@@ -604,19 +594,16 @@ function handleEditImageSelection(event) {
       file.type
     );
 
-    // Validate file type
     if (!file.type.startsWith("image/")) {
       alert("Please select an image file");
       return;
     }
 
-    // Validate file size (limit to 5MB)
     if (file.size > 5 * 1024 * 1024) {
       alert("File size must be less than 5MB");
       return;
     }
 
-    // Show image preview
     var reader = new FileReader();
     reader.onload = function (e) {
       var previewDiv = document.getElementById("edit-image-preview");
@@ -627,27 +614,22 @@ function handleEditImageSelection(event) {
     };
     reader.readAsDataURL(file);
 
-    // Upload new image to S3
     uploadEditImageToS3(file);
   }
 }
 
-// Upload image for edit page
 function uploadEditImageToS3(file) {
   console.log("Starting S3 upload for edit image:", file.name);
 
-  // Generate unique filename
   var timestamp = new Date().getTime();
   var fileName = timestamp + "_" + file.name.replace(/[^a-zA-Z0-9.-]/g, "");
 
-  // Show upload progress
   var uploadStatus = document.createElement("div");
   uploadStatus.id = "edit-upload-status";
   uploadStatus.innerHTML =
     '<p style="color: #007bff;">Uploading new image...</p>';
   document.getElementById("edit-image-preview").appendChild(uploadStatus);
 
-  // Convert file to base64
   var reader = new FileReader();
   reader.onload = function (e) {
     var base64Data = e.target.result.split(",")[1];
@@ -674,7 +656,6 @@ function uploadEditImageToS3(file) {
           var response = JSON.parse(uploadRequest.responseText);
           console.log("Edit image upload successful:", response);
 
-          // Update the hidden field with new filename
           document.getElementById("edit_image_url").value = fileName;
 
           if (statusDiv) {
@@ -713,7 +694,6 @@ function uploadEditImageToS3(file) {
   reader.readAsDataURL(file);
 }
 
-// Update item function - Only updates item status
 function updateItem() {
   console.log("updateItem function called");
 
@@ -722,16 +702,14 @@ function updateItem() {
     return;
   }
 
-  // Get only the item status
   var itemStatus = document.getElementById("edit_item_status").value;
 
-  // Validation - only check item status
+
   if (!itemStatus) {
     alert("Item status is required!");
     return;
   }
 
-  // Prepare update data - only item_id and item_status
   var updateData = {
     item_id: parseInt(window.currentEditItemId),
     item_status: itemStatus,
@@ -739,7 +717,6 @@ function updateItem() {
 
   console.log("Sending update data:", updateData);
 
-  // Send PUT request to update item
   var updateRequest = new XMLHttpRequest();
   updateRequest.open(
     "PUT",
@@ -788,7 +765,6 @@ function deleteItem(itemId) {
 
       if (deleteRequest.status === 200 || deleteRequest.status === 204) {
         alert("Item deleted successfully!");
-        // Refresh the items list to show updated data
         getItems(10);
       } else {
         alert("Error deleting item. Status: " + deleteRequest.status);
@@ -805,12 +781,11 @@ function deleteItem(itemId) {
   }
 }
 
-// Search function for OpenSearch
+
 function searchItems(query) {
   console.log("searchItems called with query:", query);
 
   if (!query || query.trim().length === 0) {
-    // If search is empty, show all items
     getItems(10);
     return;
   }
@@ -843,7 +818,6 @@ function searchItems(query) {
         return;
       }
 
-      // Display search results using the same format as getItems
       displaySearchResults(searchResults);
     } catch (error) {
       console.error("Error parsing search JSON:", error);
@@ -861,7 +835,6 @@ function searchItems(query) {
   request.send();
 }
 
-// Display search results in the same format as regular items
 function displaySearchResults(items) {
   console.log("Displaying search results:", items);
 
@@ -881,7 +854,7 @@ function displaySearchResults(items) {
       (item.item_id || i) +
       ')" style="cursor: pointer;">';
 
-    // Image section
+
     html += '<div class="item-image">';
     if (item.image_url) {
       var imageUrl =
@@ -892,11 +865,11 @@ function displaySearchResults(items) {
         imageUrl +
         '" alt="Item image" onload="console.log(\'Image loaded successfully:\', this.src);" onerror="console.error(\'Failed to load image:\', this.src);">';
     } else {
-      html += '<div class="placeholder-image"><span>📷</span></div>';
+      html += '<div class="placeholder-image"><span></span></div>';
     }
     html += "</div>";
 
-    // Item info section
+
     html += '<div class="item-info">';
     html +=
       '<h3 class="item-name">' + (item.item_name || "Unknown Item") + "</h3>";
