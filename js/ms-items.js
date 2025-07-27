@@ -47,7 +47,11 @@ function getItems(num) {
         console.log("Processing item", i, ":", item);
 
         html +=
-          '<div class="item-card" data-item-id="' + (item.item_id || i) + '">';
+          '<div class="item-card" data-item-id="' +
+          (item.item_id || i) +
+          '" onclick="viewItemDetails(' +
+          (item.item_id || i) +
+          ')" style="cursor: pointer;">';
 
         // Image section
         html += '<div class="item-image">';
@@ -90,11 +94,11 @@ function getItems(num) {
 
         html += '<div class="item-actions">';
         html +=
-          '<button class="action-btn edit-btn" onclick="editItem(' +
+          '<button class="action-btn edit-btn" onclick="event.stopPropagation(); editItem(' +
           (item.item_id || i) +
           ')" title="Edit Item">Update</button>';
         html +=
-          '<button class="action-btn delete-btn" onclick="deleteItem(' +
+          '<button class="action-btn delete-btn" onclick="event.stopPropagation(); deleteItem(' +
           (item.item_id || i) +
           ')" title="Delete Item">Delete</button>';
         html += "</div>";
@@ -467,6 +471,12 @@ function uploadImageToS3(file) {
 function editItem(itemId) {
   console.log("Redirecting to edit page for item:", itemId);
   window.location.href = "edit_items_page.html?id=" + itemId;
+}
+
+// View item details function
+function viewItemDetails(itemId) {
+  console.log("Redirecting to item details page for item:", itemId);
+  window.location.href = "item_details_page.html?id=" + itemId;
 }
 
 // Load item data for editing

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Item Details</title>
+    <link rel="stylesheet" href="css/item_details_page.css" />
+    <script src="js/ms-items.js"></script>
+  </head>
+  <body>
+    <div class="item-details-container">
+      <!-- Close button -->
+      <button class="close-btn" onclick="goBackToMain()">×</button>
+
+      <!-- Item details content -->
+      <div class="item-content">
+        <!-- Left section - Item details -->
+        <div class="item-info-section">
+          <h2 id="item-name">Item Name: Loading...</h2>
+          <p id="item-status">Status: Loading...</p>
+          <p id="item-contact">Contact Info: Loading...</p>
+
+          <div class="description-section">
+            <h3>Description:</h3>
+            <p id="item-description">Loading description...</p>
+          </div>
+        </div>
+
+        <!-- Right section - Item image -->
+        <div class="item-image-section">
+          <div class="image-placeholder" id="item-image-container">
+            <div class="placeholder-icon">📷</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Load item details when page loads
+      document.addEventListener("DOMContentLoaded", function () {
+        loadItemDetails();
+      });
+
+      function loadItemDetails() {
+        // Get item ID from URL parameters
+        var urlParams = new URLSearchParams(window.location.search);
+        var itemId = urlParams.get("id");
+
+        if (!itemId) {
+          alert("No item ID provided!");
+          goBackToMain();
+          return;
+        }
+
+        console.log("Loading details for item ID:", itemId);
+
+        // Fetch all items and find the one to display
+        var request = new XMLHttpRequest();
+        request.open(
+          "GET",
+          "https://d83tb6gkj2.execute-api.us-east-1.amazonaws.com/api/items",
+          true
+        );
+
+        request.onload = function () {
+          if (request.status === 200) {
+            try {
+              var response = JSON.parse(request.responseText);
+              var items = response.items || [];
+
+              // Find the item with matching ID
+              var item = items.find(function (item) {
+                return item.item_id == itemId;
+              });
+
+              if (item) {
+                displayItemDetails(item);
+              } else {
+                alert("Item not found!");
+                goBackToMain();
+              }
+            } catch (error) {
+              console.error("Error parsing response:", error);
+              alert("Error loading item details");
+              goBackToMain();
+            }
+          } else {
+            console.error("Failed to load items");
+            alert("Error loading item details");
+            goBackToMain();
+          }
+        };
+
+        request.onerror = function () {
+          console.error("Request failed");
+          alert("Network error loading item details");
+          goBackToMain();
+        };
+
+        request.send();
+      }
+
+      function displayItemDetails(item) {
+        console.log("Displaying item details:", item);
+
+        // Update the page title
+        document.title = "Item Details - " + (item.item_name || "Unknown Item");
+
+        // Fill in the item details
+        document.getElementById("item-name").textContent =
+          "Item Name: " + (item.item_name || "Unknown Item");
+        document.getElementById("item-status").textContent =
+          "Status: " + (item.item_status || "Unknown Status");
+        document.getElementById("item-contact").textContent =
+          "Contact Info: " + (item.contact_info || "No contact info available");
+        document.getElementById("item-description").textContent =
+          item.description || "No description available.";
+
+        // Handle item image
+        var imageContainer = document.getElementById("item-image-container");
+        if (item.image_url) {
+          var imageUrl =
+            "https://c24b02bucket.s3.amazonaws.com/images/" + item.image_url;
+          imageContainer.innerHTML =
+            '<img src="' +
+            imageUrl +
+            '" alt="Item image" class="item-image" onload="console.log(\'Image loaded successfully\');" onerror="showImagePlaceholder();">';
+        } else {
+          showImagePlaceholder();
+        }
+      }
+
+      function showImagePlaceholder() {
+        var imageContainer = document.getElementById("item-image-container");
+        imageContainer.innerHTML = '<div class="placeholder-icon">📷</div>';
+      }
+
+      function goBackToMain() {
+        window.location.href = "main_page.html";
+      }
+    </script>
+  </body>
+</html>
