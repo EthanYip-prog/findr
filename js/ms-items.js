@@ -777,7 +777,7 @@ function deleteItem(itemId) {
 
     deleteRequest.open(
       "DELETE",
-      "https://3mn1pumk79.execute-api.us-east-1.amazonaws.com/api/items" +
+      "https://3mn1pumk79.execute-api.us-east-1.amazonaws.com/api/items/" +
         itemId,
       true
     );
@@ -794,7 +794,7 @@ function deleteItem(itemId) {
         alert("Error deleting item. Status: " + deleteRequest.status);
         console.error("Delete failed:", deleteRequest.responseText);
       }
-    };
+    };  
 
     deleteRequest.onerror = function () {
       console.error("DELETE request failed");
