@@ -1,7 +1,7 @@
 const COGNITO = {
   region: "us-east-1",
-  userPoolId: "us-east-1_8rw7Qkats",
-  clientId: "27st6n3f3gbqehr40at0ahc3bb",
+  userPoolId: "us-east-1_PonHnBDiy",
+  clientId: "4e7gg7980fufcvofe172nqnplo",
 };
 
 // Initialize AWS SDK
