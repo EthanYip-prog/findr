@@ -57,7 +57,7 @@ function getItems(num) {
         html += '<div class="item-image">';
         if (item.image_url) {
           var imageUrl =
-            "https://c24b02bucket.s3.amazonaws.com/images/" + item.image_url;
+            "https://c24b022bucket.s3.amazonaws.com/images/" + item.image_url;
           console.log("Trying image URL:", imageUrl);
           html +=
             '<img src="' +
@@ -581,7 +581,7 @@ function populateEditForm(item) {
     var previewDiv = document.getElementById("edit-image-preview");
     var previewImg = document.getElementById("edit-preview-img");
     var imageUrl =
-      "https://c24b02bucket.s3.amazonaws.com/images/" + item.image_url;
+      "https://c24b022bucket.s3.amazonaws.com/images/" + item.image_url;
 
     previewImg.src = imageUrl;
     previewDiv.style.display = "block";
@@ -885,7 +885,7 @@ function displaySearchResults(items) {
     html += '<div class="item-image">';
     if (item.image_url) {
       var imageUrl =
-        "https://c24b02bucket.s3.amazonaws.com/images/" + item.image_url;
+        "https://c24b022bucket.s3.amazonaws.com/images/" + item.image_url;
       console.log("Trying image URL:", imageUrl);
       html +=
         '<img src="' +
