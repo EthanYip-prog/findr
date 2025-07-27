@@ -9,12 +9,10 @@
   </head>
   <body>
     <div class="item-details-container">
-      <!-- Close button -->
       <button class="close-btn" onclick="goBackToMain()">×</button>
 
-      <!-- Item details content -->
+ 
       <div class="item-content">
-        <!-- Left section - Item details -->
         <div class="item-info-section">
           <h2 id="item-name">Item Name: Loading...</h2>
           <p id="item-status">Status: Loading...</p>
@@ -52,8 +50,6 @@
         }
 
         console.log("Loading details for item ID:", itemId);
-
-        // Fetch all items and find the one to display
         var request = new XMLHttpRequest();
         request.open(
           "GET",
@@ -66,8 +62,6 @@
             try {
               var response = JSON.parse(request.responseText);
               var items = response.items || [];
-
-              // Find the item with matching ID
               var item = items.find(function (item) {
                 return item.item_id == itemId;
               });
@@ -101,11 +95,7 @@
 
       function displayItemDetails(item) {
         console.log("Displaying item details:", item);
-
-        // Update the page title
         document.title = "Item Details - " + (item.item_name || "Unknown Item");
-
-        // Fill in the item details
         document.getElementById("item-name").textContent =
           "Item Name: " + (item.item_name || "Unknown Item");
         document.getElementById("item-status").textContent =
@@ -115,7 +105,6 @@
         document.getElementById("item-description").textContent =
           item.description || "No description available.";
 
-        // Handle item image
         var imageContainer = document.getElementById("item-image-container");
         if (item.image_url) {
           var imageUrl =
