@@ -328,6 +328,34 @@ document.addEventListener("DOMContentLoaded", function () {
   if (itemsList) {
     console.log("Found items-list, calling getItems...");
     getItems(10);
+
+    // Set up search functionality
+    var searchInput = document.getElementById("search-input");
+    if (searchInput) {
+      console.log("Found search input, setting up search functionality");
+
+      // Search on Enter key press
+      searchInput.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+          var query = searchInput.value.trim();
+          console.log("Search triggered with query:", query);
+          searchItems(query);
+        }
+      });
+
+      // Optional: Search as user types (with debounce)
+      var searchTimeout;
+      searchInput.addEventListener("input", function (event) {
+        clearTimeout(searchTimeout);
+        var query = event.target.value.trim();
+
+        // Debounce search - wait 500ms after user stops typing
+        searchTimeout = setTimeout(function () {
+          console.log("Auto-search triggered with query:", query);
+          searchItems(query);
+        }, 500);
+      });
+    }
   }
 });
 
@@ -775,4 +803,134 @@ function deleteItem(itemId) {
 
     deleteRequest.send();
   }
+}
+
+// Search function for OpenSearch
+function searchItems(query) {
+  console.log("searchItems called with query:", query);
+
+  if (!query || query.trim().length === 0) {
+    // If search is empty, show all items
+    getItems(10);
+    return;
+  }
+
+  var request = new XMLHttpRequest();
+  var searchUrl =
+    "https://3mn1pumk79.execute-api.us-east-1.amazonaws.com/api/items/search?query=" +
+    encodeURIComponent(query.trim());
+
+  request.open("GET", searchUrl, true);
+
+  request.onload = function () {
+    console.log("Search Status:", request.status);
+    console.log("Search Response text:", request.responseText);
+
+    if (request.status !== 200) {
+      console.error("Failed to search items. Status:", request.status);
+      document.getElementById("items-list").innerHTML =
+        "<p>Error searching items.</p>";
+      return;
+    }
+
+    try {
+      var searchResults = JSON.parse(request.responseText);
+      console.log("Search results:", searchResults);
+
+      if (!searchResults || searchResults.length === 0) {
+        document.getElementById("items-list").innerHTML =
+          "<p>No items found matching your search.</p>";
+        return;
+      }
+
+      // Display search results using the same format as getItems
+      displaySearchResults(searchResults);
+    } catch (error) {
+      console.error("Error parsing search JSON:", error);
+      document.getElementById("items-list").innerHTML =
+        "<p>Error parsing search results.</p>";
+    }
+  };
+
+  request.onerror = function () {
+    console.error("Search request failed");
+    document.getElementById("items-list").innerHTML =
+      "<p>Network error during search.</p>";
+  };
+
+  request.send();
+}
+
+// Display search results in the same format as regular items
+function displaySearchResults(items) {
+  console.log("Displaying search results:", items);
+
+  var html = "";
+
+  for (var i = 0; i < items.length; i++) {
+    var item = items[i];
+
+    if (!item) continue;
+
+    console.log("Processing search result item", i, ":", item);
+
+    html +=
+      '<div class="item-card" data-item-id="' +
+      (item.item_id || i) +
+      '" onclick="viewItemDetails(' +
+      (item.item_id || i) +
+      ')" style="cursor: pointer;">';
+
+    // Image section
+    html += '<div class="item-image">';
+    if (item.image_url) {
+      var imageUrl =
+        "https://c24b02bucket.s3.amazonaws.com/images/" + item.image_url;
+      console.log("Trying image URL:", imageUrl);
+      html +=
+        '<img src="' +
+        imageUrl +
+        '" alt="Item image" onload="console.log(\'Image loaded successfully:\', this.src);" onerror="console.error(\'Failed to load image:\', this.src);">';
+    } else {
+      html += '<div class="placeholder-image"><span>📷</span></div>';
+    }
+    html += "</div>";
+
+    // Item info section
+    html += '<div class="item-info">';
+    html +=
+      '<h3 class="item-name">' + (item.item_name || "Unknown Item") + "</h3>";
+    html +=
+      '<p class="item-status"><strong>Status:</strong> ' +
+      (item.item_status || "Unknown Status") +
+      "</p>";
+    html +=
+      '<p class="item-category"><strong>Category:</strong> ' +
+      (item.category || "No category") +
+      "</p>";
+    html +=
+      '<p class="item-description"><strong>Description:</strong> ' +
+      (item.description || "No description available") +
+      "</p>";
+    html +=
+      '<p class="item-id"><strong>ID:</strong> ' + (item.item_id || i) + "</p>";
+    html += "</div>";
+
+    html += '<div class="item-actions">';
+    html +=
+      '<button class="action-btn edit-btn" onclick="event.stopPropagation(); editItem(' +
+      (item.item_id || i) +
+      ')" title="Edit Item">Update</button>';
+    html +=
+      '<button class="action-btn delete-btn" onclick="event.stopPropagation(); deleteItem(' +
+      (item.item_id || i) +
+      ')" title="Delete Item">Delete</button>';
+    html += "</div>";
+
+    html += "</div>";
+  }
+
+  console.log("Generated search HTML:", html);
+  document.getElementById("items-list").innerHTML = html;
+  console.log("Search HTML inserted into DOM");
 }
