@@ -433,7 +433,7 @@ function uploadImageToS3(file) {
     // Replace with your actual API Gateway endpoint for the upload Lambda
     uploadRequest.open(
       "POST",
-      "https://dujialmqi8.execute-api.us-east-1.amazonaws.com/api/upload-image",
+      "https://g19duilfpd.execute-api.us-east-1.amazonaws.com/api/upload-image",
       true
     );
     uploadRequest.setRequestHeader("Content-Type", "application/json");
@@ -467,7 +467,7 @@ function uploadImageToS3(file) {
         console.error("Response:", uploadRequest.responseText);
         if (statusDiv) {
           statusDiv.innerHTML =
-            '<p style="color: #dc3545;">❌ Upload failed - Server error</p>';
+            '<p style="color: #dc3545;">Upload failed - Server error</p>';
         }
       }
     };
@@ -661,7 +661,7 @@ function uploadEditImageToS3(file) {
     var uploadRequest = new XMLHttpRequest();
     uploadRequest.open(
       "POST",
-      "https://dujialmqi8.execute-api.us-east-1.amazonaws.com/api/upload-image",
+      "https://g19duilfpd.execute-api.us-east-1.amazonaws.com/api/upload-image",
       true
     );
     uploadRequest.setRequestHeader("Content-Type", "application/json");
